@@ -1,7 +1,12 @@
 from django.shortcuts import render
 
+from catalog.models import Product
+
 
 def home(request):
+    last_products = Product.objects.order_by('-creation_date')[:5]
+    for product in last_products:
+        print(product)
     return render(request, 'catalog/home.html')
 
 
@@ -14,4 +19,3 @@ def contacts(request):
               f"Телефон: {phone}\n"
               f"Сообщение: {message}")
     return render(request, 'catalog/contacts.html')
-
