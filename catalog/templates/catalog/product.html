@@ -1,0 +1,28 @@
+{% extends 'catalog/base.html' %}
+{% load my_tags %}
+{% block content %}
+{% for object in object_list %}
+<div class="container">
+    <h1 class="display-4">{{ object.name }}</h1>
+    <p>{{ object.description }}</p>
+    <!--            <p><a class="btn btn-primary btn-lg" href="#" role="button">Learn more &raquo;</a></p>-->
+</div>
+
+<div class="container">
+    <div class="card mb-4 box-shadow">
+<!--        <img src="/media/{{ object.image }}" alt="Упс!">-->
+<!--        <img src="{{ object.image|mediapath }}" alt="Упс!">-->
+        <img src="{% mediapath object.image %}" alt="Упс!">
+        <div class="card-body">
+            <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
+            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                <li>- Категория {{ object.category }}</li>
+                <li>- Создан {{ object.creation_date }}</li>
+                <li>- Изменен{{ object.last_modified_date }}</li>
+            </ul>
+        </div>
+    </div>
+    {% include 'catalog/includes/inc_footer.html' %}
+</div>
+{% endfor %}
+{% endblock %}
