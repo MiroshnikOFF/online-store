@@ -16,6 +16,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 DB_PASSWORD = os.getenv('DB_PASSWORD')
+EMAIL = os.getenv('EMAIL')
+EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -153,6 +155,6 @@ EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = 'taxi8308@mail.ru'
-EMAIL_HOST_PASSWORD = '2QkjimnN0K7wFatjg9Ex'
+EMAIL_HOST_USER = EMAIL
+EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
 
