@@ -1,9 +1,14 @@
+import os
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
 from django.core.mail import send_mail
+from dotenv import load_dotenv
 
 from blog.models import Blog
+
+load_dotenv()
+EMAIL = os.getenv('EMAIL')
 
 
 class BlogListView(ListView):
@@ -43,9 +48,9 @@ class BlogDitailView(DetailView):
         self.object.views += 1
         self.object.save()
         if self.object.views == 100:
-            subject = 'Заголовок письма'
-            message = 'Текст письма'
-            from_email = 'taxi8308@mail.ru'
+            subject = 'Поздравление'
+            message = 'С ДОСТИЖЕНИЕМ !!!'
+            from_email = EMAIL
             recipient_list = ['taxi83080@yandex.ru']
             send_mail(subject, message, from_email, recipient_list)
         return self.object
