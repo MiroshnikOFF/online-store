@@ -1,16 +1,16 @@
 from django.shortcuts import render
+from django.views.generic import ListView, TemplateView
 
 from catalog.models import Product
 
 
-def home(request):
-    # last_products = Product.objects.order_by('-creation_date')[:5]
-    # for product in last_products:
-    #     print(product)
-    context = {
-        'object_list': Product.objects.all()
-    }
-    return render(request, 'catalog/home.html', context)
+class HomeTemplateView(TemplateView):
+    template_name = 'catalog/home.html'
+
+    def get_context_data(self):
+        context_data = super().get_context_data()
+        context_data['object_list'] = Product.objects.all()
+        return context_data
 
 
 def contacts(request):
@@ -24,8 +24,10 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
-def product(request, pk):
-    context = {
-        'object_list': Product.objects.filter(id=pk)
-    }
-    return render(request, 'catalog/product.html', context)
+class ProductListView(ListView):
+    model = Product
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = queryset.filter(pk=self.kwargs.get('pk'))
+        return queryset
