@@ -9,6 +9,7 @@ from blog.models import Blog
 
 load_dotenv()
 EMAIL = os.getenv('EMAIL')
+RECIPIENT_LIST = os.getenv('RECIPIENT_LIST').split(', ')
 
 
 class BlogListView(ListView):
@@ -51,7 +52,7 @@ class BlogDitailView(DetailView):
             subject = 'Поздравление'
             message = 'С ДОСТИЖЕНИЕМ !!!'
             from_email = EMAIL
-            recipient_list = ['taxi83080@yandex.ru']
+            recipient_list = RECIPIENT_LIST
             send_mail(subject, message, from_email, recipient_list)
         return self.object
 
