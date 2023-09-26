@@ -1,25 +1,38 @@
 {% extends 'catalog/base.html' %}
-{% load my_tags %}
-{% block content %}
-{% for object in object_list %}
-<div class="container">
-    <h1 class="display-4">{{ object.name }}</h1>
-    <p>{{ object.description }}</p>
-</div>
 
+{% block content %}
+<div class="col-12 mb-5" align="center">
+    <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_create' %}">Добавить продукт</a>
+</div>
 <div class="container">
-    <div class="card mb-4 box-shadow">
-        <img src="{% mediapath object.image %}" alt="Упс!">
-        <div class="card-body">
-            <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
-            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                <li>- Категория {{ object.category }}</li>
-                <li>- Создан {{ object.creation_date }}</li>
-                <li>- Изменен{{ object.last_modified_date }}</li>
-            </ul>
+    <div class="row text-center">
+        <div class="col-12">
+
+            {% for object in object_list %}
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <p>{{ object.description|slice:':100' }}...</p>
+                    </ul>
+                    {% for version in current_versions %}
+                    {% if version.product.pk == object.pk %}
+                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                        <li>- Текушая версия: {{ version.name }}</li>
+                        <li>- Номер версии: {{ version.number }}</li>
+                    </ul>
+                    {% endif %}
+                    {% endfor %}
+                    <a href="{% url 'catalog:product' object.pk %}" type="button"
+                       class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>
+                </div>
+            </div>
+            {% endfor %}
         </div>
     </div>
     {% include 'catalog/includes/inc_footer.html' %}
 </div>
-{% endfor %}
 {% endblock %}
