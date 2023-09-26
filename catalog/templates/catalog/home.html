@@ -5,28 +5,6 @@
     <h1 class="display-4">Skystore</h1>
     <p class="lead">Skystore - это отличный вариант хранения ваших плагинов и примеров кода, который вы бы хотели
         продать</p>
-</div>
-
-<div class="container">
-    <div class="row text-center">
-        <div class="col-12">
-            {% for object in object_list %}
-            <div class="card mb-4 box-shadow">
-                <div class="card-header">
-                    <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
-                </div>
-                <div class="card-body">
-                    <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
-                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                        <p>{{ object.description|slice:':100' }}...</p>
-                    </ul>
-                    <a href="{% url 'catalog:product' object.pk %}" type="button"
-                       class="btn btn-lg btn-block btn-outline-primary">Купить</a>
-                </div>
-            </div>
-            {% endfor %}
-        </div>
-    </div>
-    {% include 'catalog/includes/inc_footer.html' %}
+{% include 'catalog/includes/inc_footer.html' %}
 </div>
 {% endblock %}
