@@ -13,11 +13,25 @@
         <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:home' %}">Главная страница</a>
         <a class="p-2 btn btn-outline-primary" href="{% url 'catalog:products' %}">Каталог</a>
         <a class="p-2 btn btn-outline-primary" href="/contacts/">Контакты</a>
-        <a class="p-2 btn btn-outline-primary" href="{% url 'blog:list' %}">Блог</a>
     </nav>
+</div>
+<div class="col-sm-4 offset-md-1 py-4">
+    <h4 class="text-white">Меню</h4>
+    <ul class="list-unstyled">
+        {% if user.is_authenticated %}
+            <li><a href="{% url 'users:profile' %}">Профиль</a></li>
+            <li><a href="{% url 'users:logout' %}">Выход</a></li>
+            {% if not user.is_verified %}
+                <a class="p-2 btn btn-outline-warning" href="{% url 'users:verification' %}">Подтвердите электронную почту</a>
+            {% endif %}
+        {% else %}
+            <li><a href="{% url 'users:login' %}">Вход</a></li>
+            <li><a href="{% url 'users:register' %}">Регистрация</a></li>
+        {% endif %}
+
+    </ul>
 </div>
 {% block content %}
 {% endblock %}
-<script src="/static/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

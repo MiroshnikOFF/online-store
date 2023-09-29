@@ -15,10 +15,6 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-DB_PASSWORD = os.getenv('DB_PASSWORD')
-EMAIL = os.getenv('EMAIL')
-EMAIL_PASSWORD = os.getenv('EMAIL_PASSWORD')
-
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -47,6 +43,7 @@ INSTALLED_APPS = [
 
     'catalog',
     'blog',
+    'users',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +84,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'catalog',
         'USER': 'postgres',
-        'PASSWORD': DB_PASSWORD,
+        'PASSWORD': os.getenv('DB_PASSWORD'),
     }
 }
 
@@ -155,6 +152,15 @@ EMAIL_HOST = 'smtp.mail.ru'
 EMAIL_PORT = 2525
 EMAIL_USE_TLS = True
 EMAIL_USE_SSL = False
-EMAIL_HOST_USER = EMAIL
-EMAIL_HOST_PASSWORD = EMAIL_PASSWORD
+EMAIL_HOST_USER = os.getenv('EMAIL')
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_PASSWORD')
 
+
+AUTH_USER_MODEL = 'users.User'
+LOGOUT_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/'
+
+SUPERUSER_EMAIL = os.getenv('SUPERUSER_EMAIL')
+SUPERUSER_FIRST_NAME = os.getenv('SUPERUSER_FIRST_NAME')
+SUPERUSER_LAST_NAME = os.getenv('SUPERUSER_LAST_NAME')
+SUPERUSER_PASSWORD = os.getenv('SUPERUSER_PASSWORD')
