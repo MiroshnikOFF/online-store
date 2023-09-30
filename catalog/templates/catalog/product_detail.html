@@ -1,29 +1,37 @@
 {% extends 'catalog/base.html' %}
 {% load my_tags %}
 {% block content %}
-<div class="container">
-    <h1 class="display-4">{{ object.name }}</h1>
-    <p>{{ object.description }}</p>
-</div>
-
-<div class="container">
-    <div class="card mb-4 box-shadow">
-        <img src="{% mediapath object.image %}" alt="Упс!">
-        <div class="card-body">
-            <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
-            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                <li>- Категория {{ object.category }}</li>
-                <li>- Создан {{ object.creation_date }}</li>
-                <li>- Изменен{{ object.last_modified_date }}</li>
-            </ul>
-            <a href="{% url 'catalog:product_versions' object.pk %}"><h4>Версии</h4></a>
-        </div>
-        <div class="card-footer">
-            <a class="btn btn-primary btn-lg" type="button" href="{% url 'catalog:products' %}">Закрыть</a>
-            <a class="btn btn-warning btn-lg" type="button" href="{% url 'catalog:product_update' object.pk %}">Редактировать</a>
-            <a class="btn btn-danger btn-lg" type="button" href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
-        </div>
+    <div class="container">
+        <h1 class="display-4">{{ object.name }}</h1>
+        <p>{{ object.description }}</p>
     </div>
-    {% include 'catalog/includes/inc_footer.html' %}
-</div>
+
+    <div class="container">
+        <div class="card mb-4 box-shadow">
+            <img src="{% mediapath object.image %}" alt="Упс!">
+            <div class="card-body">
+                <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
+                <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                    <li>- Категория {{ object.category }}</li>
+                    <li>- Создан {{ object.creation_date }}</li>
+                    <li>- Изменен {{ object.last_modified_date }}</li>
+                    {% if object.autor %}
+                        <li>Автор: {{ object.autor }}</li>
+                    {% endif %}
+                </ul>
+                <a href="{% url 'catalog:product_versions' object.pk %}"><h4>Версии</h4></a>
+            </div>
+            <div class="card-footer">
+                <a class="btn btn-primary btn-lg" type="button" href="{% url 'catalog:products' %}">Закрыть</a>
+                {% if not user.is_anonymous and user.email == object.autor.email %}
+                    <a class="btn btn-warning btn-lg" type="button"
+                       href="{% url 'catalog:product_update' object.pk %}">Редактировать</a>
+                    <a class="btn btn-danger btn-lg" type="button"
+                       href="{% url 'catalog:product_delete' object.pk %}">Удалить</a>
+                {% endif %}
+            </div>
+
+        </div>
+        {% include 'catalog/includes/inc_footer.html' %}
+    </div>
 {% endblock %}
