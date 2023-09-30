@@ -1,5 +1,6 @@
 import random
 
+from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.views import LoginView as BaseLoginView
 from django.contrib.auth.views import LogoutView as BaseLogoutView
 from django.core.mail import send_mail
@@ -62,7 +63,26 @@ def email_verification(request):
             user.is_verified = True
             user.save()
         except User.DoesNotExist:
-            print('Пользователь не найден')
             return render(request, 'users/unsuccessful_verification.html')
         return render(request, 'users/successful_verification.html')
     return render(request, 'users/verification.html')
+
+
+def password_recovery(request):
+    if request.method == 'POST':
+        new_password = ''.join([str(random.randint(0, 9)) for _ in range(12)])
+        input_email = request.POST.get('email')
+        try:
+            user = User.objects.get(email=input_email)
+            user.set_password(new_password)
+            user.save()
+            send_mail(
+                subject='Восстановление доступа',
+                message=f'Ваш новый пароль: {new_password}',
+                from_email=settings.EMAIL_HOST_USER,
+                recipient_list=[user.email],
+            )
+        except User.DoesNotExist:
+            return render(request, 'users/unsuccessful_recovery.html')
+        return render(request, 'users/successful_recovery.html')
+    return render(request, 'users/password_recovery.html')
