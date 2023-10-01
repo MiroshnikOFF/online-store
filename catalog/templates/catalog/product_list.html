@@ -2,9 +2,13 @@
 
 {% block content %}
     {% if not user.is_anonymous %}
-    <div class="col-12 mb-5" align="center">
-        <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_create' %}">Добавить продукт</a>
-    </div>
+        <div class="col-12 mb-5" align="center">
+            {% if user.is_verified %}
+                <a class="p-2 btn btn-outline-success" href="{% url 'catalog:product_create' %}">Добавить продукт</a>
+            {% else %}
+                <a class="p-2 btn btn-outline-success" href="{% url 'users:verification' %}">Добавить продукт</a>
+            {% endif %}
+        </div>
     {% endif %}
     <div class="container">
         <div class="row text-center">
