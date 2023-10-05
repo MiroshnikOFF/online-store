@@ -9,7 +9,7 @@ from blog.models import Blog
 
 load_dotenv()
 EMAIL = os.getenv('EMAIL')
-RECIPIENT_LIST = os.getenv('RECIPIENT_LIST').split(', ')
+RECIPIENT_LIST = os.getenv('RECIPIENT_LIST').split(',')
 
 
 class BlogListView(ListView):
