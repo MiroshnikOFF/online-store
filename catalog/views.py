@@ -4,7 +4,8 @@ from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DetailView, DeleteView
 
 from catalog.forms import ProductForm, VersionForm
-from catalog.models import Product, Version
+from catalog.models import Product, Version, Category
+from catalog.services import get_categories_cache
 
 
 class HomeTemplateView(TemplateView):
@@ -101,6 +102,13 @@ def show_version(request, **kwargs):
     return render(request, 'catalog/product_version_detail.html', context)
 
 
+class CategoryListView(ListView):
+    model = Category
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+        queryset = get_categories_cache()
+        return queryset
 
 
 
