@@ -1,5 +1,7 @@
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.forms import inlineformset_factory
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, TemplateView, CreateView, UpdateView, DetailView, DeleteView
 
@@ -17,6 +19,7 @@ class HomeTemplateView(TemplateView):
         return context_data
 
 
+@login_required
 def contacts(request):
     if request.method == 'POST':
         name = request.POST.get('name')
@@ -28,7 +31,7 @@ def contacts(request):
     return render(request, 'catalog/contacts.html')
 
 
-class ProductListView(ListView):
+class ProductListView(LoginRequiredMixin, ListView):
     model = Product
 
     def get_context_data(self, **kwargs):
@@ -38,7 +41,7 @@ class ProductListView(ListView):
         return context_data
 
 
-class ProductCreateView(CreateView):
+class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
     form_class = ProductForm
     success_url = reverse_lazy('catalog:products')
@@ -51,13 +54,18 @@ class ProductCreateView(CreateView):
         return super().form_valid(form)
 
 
-class ProductDetailView(DetailView):
+class ProductDetailView(LoginRequiredMixin, DetailView):
     model = Product
 
 
-class ProductUpdateView(UpdateView):
+class ProductUpdateView(LoginRequiredMixin, UpdateView):
     model = Product
     form_class = ProductForm
+    
+    def get_form_kwargs(self):
+        form_kwargs = super().get_form_kwargs()
+        form_kwargs['user'] = self.request.user
+        return form_kwargs
 
     def get_success_url(self):
         return reverse('catalog:product_update', args=[self.kwargs.get('pk')])
@@ -82,11 +90,26 @@ class ProductUpdateView(UpdateView):
         return super().form_valid(form)
 
 
-class ProductDeleteView(DeleteView):
+class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     success_url = reverse_lazy('catalog:products')
 
 
+@login_required
+@permission_required('catalog.set_is_published_product')
+def publish_product(request, pk):
+    """Публикует/снимает с публикации продукт"""
+
+    product = Product.objects.get(pk=pk)
+    if product.is_published:
+        product.is_published = False
+    else:
+        product.is_published = True
+    product.save()
+    return redirect('catalog:products')
+
+
+@login_required
 def get_versions_by_product(request, **kwargs):
     product_pk = kwargs.get('pk')
     queryset = Version.objects.filter(product=product_pk)
@@ -94,6 +117,7 @@ def get_versions_by_product(request, **kwargs):
     return render(request, 'catalog/product_versions.html', context)
 
 
+@login_required
 def show_version(request, **kwargs):
     version_pk = kwargs.get('version_pk')
     version = Version.objects.get(pk=version_pk)
@@ -102,7 +126,7 @@ def show_version(request, **kwargs):
     return render(request, 'catalog/product_version_detail.html', context)
 
 
-class CategoryListView(ListView):
+class CategoryListView(LoginRequiredMixin, ListView):
     model = Category
 
     def get_queryset(self):
