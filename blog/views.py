@@ -1,6 +1,6 @@
 import os
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.urls import reverse_lazy, reverse
 from django.views.generic import ListView, CreateView, DetailView, UpdateView, DeleteView
 from pytils.translit import slugify
@@ -24,7 +24,8 @@ class BlogListView(ListView):
         return queryset
 
 
-class BlogCreateView(LoginRequiredMixin, CreateView):
+class BlogCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
+    permission_required = 'blog.add_blog'
     model = Blog
     form_class = BlogForm
     success_url = reverse_lazy('blog:list')
@@ -53,7 +54,8 @@ class BlogDitailView(LoginRequiredMixin, DetailView):
         return self.object
 
 
-class BlogUpdateView(LoginRequiredMixin, UpdateView):
+class BlogUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+    permission_required = 'blog.change_blog'
     model = Blog
     form_class = BlogForm
     success_url = reverse_lazy('blog:list')
@@ -69,6 +71,7 @@ class BlogUpdateView(LoginRequiredMixin, UpdateView):
         return reverse('blog:view', args=[self.kwargs.get('pk')])
 
 
-class BlogDeleteView(LoginRequiredMixin, DeleteView):
+class BlogDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+    permission_required = 'blog.delete_blog'
     model = Blog
     success_url = reverse_lazy('blog:list')
