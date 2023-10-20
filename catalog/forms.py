@@ -15,7 +15,16 @@ class ProductForm(StyleFormMixin, forms.ModelForm):
 
     class Meta:
         model = Product
-        exclude = ('autor',)
+        exclude = ('autor', 'is_published', )
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(ProductForm, self).__init__(*args, **kwargs)
+
+        if not user.is_superuser and user.has_perm('catalog.set_is_published_product'):
+            self.fields['name'].widget = forms.HiddenInput()
+            self.fields['image'].widget = forms.HiddenInput()
+            self.fields['price'].widget = forms.HiddenInput()
 
     def clean_name(self):
         cleaned_data = self.cleaned_data['name']
