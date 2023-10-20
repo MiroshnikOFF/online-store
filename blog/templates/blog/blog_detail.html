@@ -2,26 +2,30 @@
 {% load my_tags %}
 {% block content %}
 
-<div class="container">
-    <a class="btn btn-outline-success" href="{% url 'blog:edit' object.pk %}">Редактировать запись</a>
-    <a class="btn btn-outline-danger" href="{% url 'blog:delete' object.pk %}">Удалить запись</a>
-    <h1 class="display-4">{{ object.title }}</h1>
-    <p>{{ object.slug }}</p>
-    <p>Запить создана {{ object.created_at }}</p>
-    <p>Количество просмотров: {{ object.views }}</p>
-</div>
-
-<div class="container">
-    <div class="card mb-4 box-shadow">
-        <img src="{% mediapath object.preview %}" alt="Упс!">
-        <div class="card-body">
-            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                <p>
-                    {{ object.body }}
-                </p>
-            </ul>
-        </div>
+    <div class="container">
+        {% if perms.blog.change_blog %}
+            <a class="btn btn-outline-success" href="{% url 'blog:edit' object.pk %}">Редактировать запись</a>
+        {% endif %}
+        {% if perms.blog.delete_blog %}
+            <a class="btn btn-outline-danger" href="{% url 'blog:delete' object.pk %}">Удалить запись</a>
+        {% endif %}
+        <h1 class="display-4">{{ object.title }}</h1>
+        <p>{{ object.slug }}</p>
+        <p>Запить создана {{ object.created_at }}</p>
+        <p>Количество просмотров: {{ object.views }}</p>
     </div>
-    {% include 'catalog/includes/inc_footer.html' %}
-</div>
+
+    <div class="container">
+        <div class="card mb-4 box-shadow">
+            <img src="{% mediapath object.preview %}" alt="Упс!">
+            <div class="card-body">
+                <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                    <p>
+                        {{ object.body }}
+                    </p>
+                </ul>
+            </div>
+        </div>
+        {% include 'catalog/includes/inc_footer.html' %}
+    </div>
 {% endblock %}
