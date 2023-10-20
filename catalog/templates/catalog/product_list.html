@@ -13,33 +13,43 @@
     <div class="container">
         <div class="row text-center">
             <div class="col-12">
-
                 {% for object in object_list %}
-                    <div class="card mb-4 box-shadow">
-                        <div class="card-header">
-                            <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                    {% if object.is_published or object.autor == user or perms.catalog.set_is_published_product %}
+                        <div class="card mb-4 box-shadow">
+                            <div class="card-header">
+                                <h4 class="my-0 font-weight-normal">{{ object.name }}</h4>
+                            </div>
+                            <div class="card-body">
+                                <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
+                                <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                                    {% if object.description %}
+                                        <li>{{ object.description|slice:':100' }}...</li>
+                                    {% endif %}
+                                    {% if object.autor %}
+                                        <li>Автор: {{ object.autor }}</li>
+                                    {% endif %}
+                                </ul>
+                                {% for version in current_versions %}
+                                    {% if version.product.pk == object.pk %}
+                                        <ul class="list-unstyled mt-3 mb-4 text-start m-3">
+                                            <li>- Текушая версия: {{ version.name }}</li>
+                                        </ul>
+                                    {% endif %}
+                                {% endfor %}
+                                <a href="{% url 'catalog:product' object.pk %}" type="button"
+                                   class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>
+                                {% if perms.catalog.set_is_published_product %}
+                                    {% if object.is_published %}
+                                        <a href="{% url 'catalog:product_published' object.pk %}" type="button"
+                                           class="btn btn-lg btn-block btn-outline-danger">Снять с публикации</a>
+                                    {% else %}
+                                        <a href="{% url 'catalog:product_published' object.pk %}" type="button"
+                                           class="btn btn-lg btn-block btn-outline-success">Опубликовать</a>
+                                    {% endif %}
+                                {% endif %}
+                            </div>
                         </div>
-                        <div class="card-body">
-                            <h1 class="card-title pricing-card-title">$ {{ object.price }}</h1>
-                            <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                                {% if object.description %}
-                                    <li>{{ object.description|slice:':100' }}...</li>
-                                {% endif %}
-                                {% if object.autor %}
-                                    <li>Автор: {{ object.autor }}</li>
-                                {% endif %}
-                            </ul>
-                            {% for version in current_versions %}
-                                {% if version.product.pk == object.pk %}
-                                    <ul class="list-unstyled mt-3 mb-4 text-start m-3">
-                                        <li>- Текушая версия: {{ version.name }}</li>
-                                    </ul>
-                                {% endif %}
-                            {% endfor %}
-                            <a href="{% url 'catalog:product' object.pk %}" type="button"
-                               class="btn btn-lg btn-block btn-outline-primary">Подробнее</a>
-                        </div>
-                    </div>
+                    {% endif %}
                 {% endfor %}
             </div>
         </div>

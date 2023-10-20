@@ -23,7 +23,7 @@
             </div>
             <div class="card-footer">
                 <a class="btn btn-primary btn-lg" type="button" href="{% url 'catalog:products' %}">Закрыть</a>
-                {% if not user.is_anonymous and user.email == object.autor.email %}
+                {% if object.autor == user or perms.catalog.set_is_published_product %}
                     <a class="btn btn-warning btn-lg" type="button"
                        href="{% url 'catalog:product_update' object.pk %}">Редактировать</a>
                     <a class="btn btn-danger btn-lg" type="button"
